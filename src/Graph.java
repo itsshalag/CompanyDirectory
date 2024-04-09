@@ -18,25 +18,26 @@ import edu.princeton.cs.algs4.Bag;
  * @author Yudith Mendoza & Shala Gutierrez
  */
 class Graph {
-	private int id;
+	private int vertices;
 	private int edges;
 	private Bag<Integer>[] adj;
+	private Contact[] contacts;
 
-	public Graph(int id, int edges) {
-		this.id = id;
-		this.edges = edges;
-		adj = (Bag<Integer>[]) new Bag[edges];
-		for (int i = 0; i < edges; i++) {
+	public Graph(int vertices) {
+		this.vertices = vertices;
+		this.edges = 0;
+		adj = (Bag<Integer>[]) new Bag[vertices];
+		contacts = new Contact[vertices]; // initialize the contacts array
+		for (int i = 0; i < vertices; i++)
 			adj[i] = new Bag<>();
-		}
 	}
 
-	public Graph(String filename) {
+	public Graph(String contactFilename, String directContactFilename) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			BufferedReader br = new BufferedReader(new FileReader("Resources/SmallShopsDirectory.txt"));
 			String line;
-			int vertices = 0;
-			int edges = 0;
+			int vertexCount = 0;
+			int edgeCount = 0;
 			boolean skipHeader = true;
 
 			while ((line = br.readLine()) != null) {
@@ -44,32 +45,77 @@ class Graph {
 					skipHeader = false;
 					continue; // skip header
 				}
+				vertexCount++; // count each line as a vertex
+			}
 
+			// reset buffer reader to read from the beginning
+			br.close();
+
+			// initialize arrays after determining the number of vertices
+			adj = (Bag<Integer>[]) new Bag[vertexCount];
+			contacts = new Contact[vertexCount];
+
+			for (int i = 0; i < vertexCount; i++) {
+				adj[i] = new Bag<>();
+			}
+
+			// read and process contacts file
+			br = new BufferedReader(new FileReader("Resources/SmallShopsDirectory.txt"));
+			// skip header
+			br.readLine();
+
+			while ((line = br.readLine()) != null) {
 				String[] parts = line.split("\\|");
-				if (parts.length < 7) {
+				if (parts.length < 6) {
 					continue;
 				}
 
-				int v = Integer.parseInt(parts[0]); // Parse only the ID field
+				// parse contact details
+				int id = Integer.parseInt(parts[0]);
+				String firstName = parts[1];
+				String lastName = parts[2];
+				String phoneNumber = parts[3];
+				String email = parts[4];
+				String position = parts[5];
 
-				for (int i = 3; i < parts.length; i++) { // get the phone number field as a string
-					if (i != 4) {
-						String fieldValue = parts[i];
-						System.out.println(fieldValue);
+				// create new Contact object for each line
+				Contact contact = new Contact(id, firstName, lastName, phoneNumber, email, position);
+				contacts[id - 1] = contact; // decrement vertexCount before indexing
+			
+
+				// add edges based on position
+				for (int i = 0; i < vertexCount ; i++) { // decrecment vertexCount before iterating
+					if (contacts[i] != null && contacts[i].getPosition().equals(position) && i != id - 1) {
+						adj[i].add(id);
+						adj[id - 1].add(i); // adjust index
+						edgeCount++;
 					}
-
 				}
 
-				vertices++;
-				edges += parts.length - 2;
-
 			}
 
-			this.edges = edges / 2;
-			this.adj = (Bag<Integer>[]) new Bag[vertices];
-			for (int i = 0; i < vertices; i++) {
-				adj[i] = new Bag<>();
+			br.close();
+
+			// read and process direct contacts file
+			br = new BufferedReader(new FileReader("Resources/DirectContact.txt"));
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\\|");
+				if (parts.length < 2) {
+					continue;
+				}
+
+				int id1 = Integer.parseInt(parts[0]);
+				int id2 = Integer.parseInt(parts[1]);
+
+				adj[id1 - 1].add(id2 - 1);
+				adj[id2 - 1].add(id1 - 1);
+				edgeCount++;
 			}
+			br.close();
+
+			this.vertices = vertexCount;
+			this.edges = edgeCount / 2;
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,7 +127,7 @@ class Graph {
 	 * @return the number of vertices
 	 */
 	public int vertices() {
-		return adj.length;
+		return vertices;
 	}
 
 	/**
@@ -99,42 +145,36 @@ class Graph {
 	 * @param id the vertex ID to check
 	 */
 	public void validateVertex(int id) {
-		if (id < 0 || id >= adj.length) {
-			throw new IllegalArgumentException("Vertex id is invalid");
+		if (id < 0 || id >= vertices) {
+			throw new IllegalArgumentException("Vertex ID is invalid");
 		}
-	}
-
-	/**
-	 * Adds an edge between two vertices in the graph
-	 * 
-	 * @param v	the first vertex
-	 * @param w the second vertex
-	 */
-	public void addEdge(int v, int w) {
-		validateVertex(v);
-		validateVertex(w);
-		adj[v].add(w);
-		adj[w].add(v);
 	}
 
 	/**
 	 * Returns an iterable collection of vertices adjacent to a given vertex
 	 * 
 	 * @param id the vertex ID
-	 * @return	an iterable collection of adjacent vertices
+	 * @return an iterable collection of adjacent vertices
 	 */
 	public Iterable<Integer> adj(int id) {
 		validateVertex(id);
 		return adj[id];
 	}
 
+	public Contact getContact(int id) {
+		if (id < 0 || id >= vertices) {
+			throw new IllegalArgumentException("Invalid contact ID");
+		}
+		return contacts[id];
+	}
+
 	/**
-	 * this is here to test the text file. 
+	 * this is to test the graph with the text file.
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Graph graph = new Graph("resources/SmallShopsDirectory.txt");
+		Graph graph = new Graph("Resources/SmallShopsDirectory.txt", "Resources/DirectContact.txt");
 		System.out.println("Number of vertices: " + graph.vertices());
 		System.out.println("Number of vertices: " + graph.edges());
 		for (int v = 0; v < graph.vertices(); v++) {
