@@ -1,13 +1,13 @@
-ID|FirstName|LastName|PhoneNumber|Email|Position|Department
-1|John|Doe|123-456-7890|john@smallShops.com|CEO|Executive 
-2|Jane|Smith|256-654-5645|jane@smallShops.com|Developer|Engineering
-3|Alic|Johnson|654-650-6046|alic@smallShops.com|Designer|Design
-4|Bob|Brown|655-564-6546|bob@smallShops.com|Developer|Engineering
-5|Emily|Davis|654-654-6541|emily@smallShops.com|Designer|Design
-6|Michael|Wilson|456-564-5465|michael@smallShops.com|Manager|Management
-7|Sarah|Taylor|545-545-9999|sarah@smallShops.com|Developer|Engineering
-8|Chris|Anders|564-654-5555|chris@smallShops.com|Manager|Management
-9|Hannah|Johnson|901-432-6666|hannah@smallShops.com|Hiring Manager|Human Resources
-10|Rachel|Wong|889-901-8888|rachel@smallShops.com|Recruiter|Human Resources
-11|David|Lee|663-654-8877|david@smallShops.com|HR Analyst|Human Resources
-12|Emma|Garcia|897-6546-3321|emma@smallShops.com|HR Assistant|Human Resources
+ID|FirstName|LastName|PhoneNumber|Email|Position
+1|John|Doe|123-456-7890|john@smallShops.com|CEO
+2|Jane|Smith|256-654-5645|jane@smallShops.com|Developer
+3|Alic|Johnson|654-650-6046|alic@smallShops.com|Designer
+4|Bob|Brown|655-564-6546|bob@smallShops.com|Developer
+5|Emily|Davis|654-654-6541|emily@smallShops.com|Designer
+6|Michael|Wilson|456-564-5465|michael@smallShops.com|Manager
+7|Sarah|Taylor|545-545-9999|sarah@smallShops.com|Developer
+8|Chris|Anders|564-654-5555|chris@smallShops.com|Manager
+9|Hannah|Johnson|901-432-6666|hannah@smallShops.com|Hiring Manager
+10|Rachel|Wong|889-901-8888|rachel@smallShops.com|Recruiter
+11|David|Lee|663-654-8877|david@smallShops.com|HR Analyst
+12|Emma|Garcia|897-6546-3321|emma@smallShops.com|HR Assistant
