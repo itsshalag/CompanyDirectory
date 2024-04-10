@@ -1,189 +1,181 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 import edu.princeton.cs.algs4.Bag;
 
 /**
- * I copied and pasted this so I don't get off track but feel free to delete it
- * We will create a graph where the vertices will be a
- * Contact (id, first and last name, phone number and email). The user will
- * first be greeted by all employees, then when one is selected, it will then
- * show all other employees/contacts that work the same departments (in other
- * words, peers they work directly with) alongside their contact information. We
- * will display these relationships in a graph with edges. Then if another
- * contact is selected, it will show which other employees they have a direct
- * contact with.
+ * This class represents a graph of contacts in a company directory.
+ * It uses adjacency lists to store direct contact relationships. 
  * 
  * @author Yudith Mendoza & Shala Gutierrez
  */
 class Graph {
-	private int vertices;
-	private int edges;
-	private Bag<Integer>[] adj;
-	private Contact[] contacts;
+    private Map<Integer, Contact> contactsMap; // Map to store contact by their ID
+    private Map<Integer, Bag<Contact>> adj; // Adj list to store direct contacts
+    private int edges; // num of edges or direct contacts in the graph
 
-	public Graph(int vertices) {
-		this.vertices = vertices;
-		this.edges = 0;
-		adj = (Bag<Integer>[]) new Bag[vertices];
-		contacts = new Contact[vertices]; // initialize the contacts array
-		for (int i = 0; i < vertices; i++)
-			adj[i] = new Bag<>();
-	}
+    /**
+     * Constructor. Reads contact and direct contact relationship data from files and
+     * initializes the graph.
+     * 
+     * @param contactFilename		The filename contains contact details.
+     * @param directContactFilename	The filename containing direct contact relationship.
+     */
+    public Graph(String contactFilename, String directContactFilename) {
+        contactsMap = new HashMap<>();	// initialize contacts map
+        adj = new HashMap<>();	// initialize adj list
+        edges = 0;	
 
-	public Graph(String contactFilename, String directContactFilename) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("Resources/SmallShopsDirectory.txt"));
-			String line;
-			int vertexCount = 0;
-			int edgeCount = 0;
-			boolean skipHeader = true;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(contactFilename));
+            br.readLine(); // Skip header
 
-			while ((line = br.readLine()) != null) {
-				if (skipHeader) {
-					skipHeader = false;
-					continue; // skip header
-				}
-				vertexCount++; // count each line as a vertex
-			}
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length < 6) {
+                    continue;
+                }
 
-			// reset buffer reader to read from the beginning
-			br.close();
+                int id = Integer.parseInt(parts[0]);
+                String firstName = parts[1];
+                String lastName = parts[2];
+                String phoneNumber = parts[3];
+                String email = parts[4];
+                String position = parts[5];
 
-			// initialize arrays after determining the number of vertices
-			adj = (Bag<Integer>[]) new Bag[vertexCount];
-			contacts = new Contact[vertexCount];
+                Contact contact = new Contact(id, firstName, lastName, phoneNumber, email, position);
+                contactsMap.put(id, contact); // add contact to contacts map
+                adj.put(id, new Bag<>());	// initialize empty adj list for the contact
+            }
 
-			for (int i = 0; i < vertexCount; i++) {
-				adj[i] = new Bag<>();
-			}
+            br.close(); // close file
 
-			// read and process contacts file
-			br = new BufferedReader(new FileReader("Resources/SmallShopsDirectory.txt"));
-			// skip header
-			br.readLine();
+            br = new BufferedReader(new FileReader(directContactFilename));
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length != 2) {
+                    continue;
+                }
 
-			while ((line = br.readLine()) != null) {
-				String[] parts = line.split("\\|");
-				if (parts.length < 6) {
-					continue;
-				}
+                int sourceId = Integer.parseInt(parts[0]);
+                int targetId = Integer.parseInt(parts[1]);
 
-				// parse contact details
-				int id = Integer.parseInt(parts[0]);
-				String firstName = parts[1];
-				String lastName = parts[2];
-				String phoneNumber = parts[3];
-				String email = parts[4];
-				String position = parts[5];
+                if (contactsMap.containsKey(sourceId) && contactsMap.containsKey(targetId)) {
+                    adj.get(sourceId).add(contactsMap.get(targetId)); // Add direct contact relationship
+                    adj.get(targetId).add(contactsMap.get(sourceId)); // Add reverse relationship for undirected graph
+                    edges++; // increment num of edges
+                }
+            }
 
-				// create new Contact object for each line
-				Contact contact = new Contact(id, firstName, lastName, phoneNumber, email, position);
-				contacts[id - 1] = contact; // decrement vertexCount before indexing
-			
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-				// add edges based on position
-				for (int i = 0; i < vertexCount ; i++) { // decrecment vertexCount before iterating
-					if (contacts[i] != null && contacts[i].getPosition().equals(position) && i != id - 1) {
-						adj[i].add(id);
-						adj[id - 1].add(i); // adjust index
-						edgeCount++;
-					}
-				}
-
-			}
-
-			br.close();
-
-			// read and process direct contacts file
-			br = new BufferedReader(new FileReader("Resources/DirectContact.txt"));
-			while ((line = br.readLine()) != null) {
-				String[] parts = line.split("\\|");
-				if (parts.length < 2) {
-					continue;
-				}
-
-				int id1 = Integer.parseInt(parts[0]);
-				int id2 = Integer.parseInt(parts[1]);
-
-				adj[id1 - 1].add(id2 - 1);
-				adj[id2 - 1].add(id1 - 1);
-				edgeCount++;
-			}
-			br.close();
-
-			this.vertices = vertexCount;
-			this.edges = edgeCount / 2;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
+    /**
 	 * Returns the number of vertices in the graph
 	 * 
 	 * @return the number of vertices
-	 */
-	public int vertices() {
-		return vertices;
-	}
+	 */ 
+    public int vertices() {
+        return contactsMap.size();
+    }
 
-	/**
+    /**
 	 * Returns the number of edges in the graph.
 	 * 
 	 * @return the number of edges
 	 */
-	public int edges() {
-		return edges;
-	}
+    public int edges() {
+        return edges;
+    }
 
 	/**
 	 * Validates whether a given index ID is valid
 	 * 
 	 * @param id the vertex ID to check
 	 */
-	public void validateVertex(int id) {
-		if (id < 0 || id >= vertices) {
-			throw new IllegalArgumentException("Vertex ID is invalid");
-		}
-	}
+//	public void validateVertex(int id) {
+//		if (id < 0 || id >= vertices) {
+//			throw new IllegalArgumentException("Vertex ID is invalid");
+//		}
+//	}
+//    /**
+//	 * Returns an iterable collection of vertices adjacent to a given vertex
+//	 * 
+//	 * @param id the vertex ID
+//	 * @return an iterable collection of adjacent vertices
+//	 */
+//	public Iterable<Integer> adj(int id) {
+//		validateVertex(id);
+//		return adj[id];
+//	}
+//    
+//    public Contact getContact(int id) {
+//		if (id < 0 || id >= vertices) {
+//			throw new IllegalArgumentException("Invalid contact ID");
+//		}
+//		return contacts[id];
+//	}
+//	
+    /**
+     * Returns an iterable collection of direct contacts for a given contact ID.
+     * If the contact ID is invalid or has no direct contacts, and empty
+     * iterable is returned.
+     * 
+     * @param id 
+     * @return iterable collection of direct contacts
+     */
+    public Iterable<Contact> getDirectContacts(int id) {
+        return adj.getOrDefault(id, new Bag<>());
+    }
 
-	/**
-	 * Returns an iterable collection of vertices adjacent to a given vertex
-	 * 
-	 * @param id the vertex ID
-	 * @return an iterable collection of adjacent vertices
-	 */
-	public Iterable<Integer> adj(int id) {
-		validateVertex(id);
-		return adj[id];
-	}
-
-	public Contact getContact(int id) {
-		if (id < 0 || id >= vertices) {
-			throw new IllegalArgumentException("Invalid contact ID");
-		}
-		return contacts[id];
-	}
-
-	/**
-	 * this is to test the graph with the text file.
+    /**
+	 * this is to test the graph class.
+	 * Reads contact and direct contact relationship data from files.
+	 * Allows user to input contact ID to see their direct contacts. 
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		Graph graph = new Graph("Resources/SmallShopsDirectory.txt", "Resources/DirectContact.txt");
-		System.out.println("Number of vertices: " + graph.vertices());
-		System.out.println("Number of vertices: " + graph.edges());
-		for (int v = 0; v < graph.vertices(); v++) {
-			System.out.print("Vertex " + v + ": ");
-			for (int w : graph.adj(v)) {
-				System.out.print(w + " ");
-			}
+    public static void main(String[] args) {
+        Graph graph = new Graph("Resources/SmallShopsDirectory.txt", "Resources/DirectContact.txt");
 
-			System.out.println();
-		}
-	}
+        if (graph != null) {
+            System.out.println("Number of vertices: " + graph.vertices());
+            System.out.println("Number of edges: " + graph.edges());
+
+            testDirectContacts(graph);
+        } else {
+            System.out.println("Graph is not properly initialized.");
+        }
+    }
+
+    /**
+     * Method to test and display direct contacts for specified employee ID.
+     * Prompts user to enter a contact ID and displays the direct contacts for 
+     * that contact. 
+     * 
+     * @param graph the graph containing contact info and direct contact relationships. 
+     */
+    public static void testDirectContacts(Graph graph) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the ID of the person to see their direct contacts:");
+        int employeeId = scanner.nextInt();
+
+        if (employeeId >= 1 && employeeId <= graph.vertices()) {
+            Iterable<Contact> directContacts = graph.getDirectContacts(employeeId);
+            System.out.println("Direct contacts for employee " + employeeId + ": ");
+            for (Contact contact : directContacts) {
+                System.out.println(contact);
+            }
+        } else {
+            System.out.println("Invalid employee ID.");
+        }
+    }
 }
