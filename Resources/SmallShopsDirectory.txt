@@ -7,7 +7,15 @@ ID|FirstName|LastName|PhoneNumber|Email|Position
 6|Michael|Wilson|456-564-5465|michael@smallShops.com|Manager
 7|Sarah|Taylor|545-545-9999|sarah@smallShops.com|Manager
 8|Chris|Anders|564-654-5555|chris@smallShops.com|Manager
-9|Hannah|Johnson|901-432-6666|hannah@smallShops.com|
+9|Hannah|Johnson|901-432-6666|hannah@smallShops.com|Designer
 10|Rachel|Wong|889-901-8888|rachel@smallShops.com|HR Analyst
 11|David|Lee|663-654-8877|david@smallShops.com|HR Assistant
 12|Emma|Garcia|897-6546-3321|emma@smallShops.com|HR Assistant
+13|Emma|Johnson|555-123-4567|emma.johnson@example.com|Sales Manager
+14|Michael|Smith|555-234-5678|michael.smith@example.com|Marketing Director
+15|Olivia|Brown|555-345-6789|olivia.brown@example.com|Operations Coordinator
+16|William|Davis|555-456-7890|william.davis@example.com|Finance Analyst
+17|Ava|Wilson|555-567-8901|ava.wilson@example.com|Human Resources Manager
+18|James|Taylor|555-678-9012|james.taylor@example.com|Product Manager
+19|Sophia|Anderson|555-789-0123|sophia.anderson@example.com|Customer Service Representative
+20|Alexander|Thomas|555-890-1234|alexander.thomas@example.com|IT Specialist
