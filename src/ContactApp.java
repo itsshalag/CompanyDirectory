@@ -43,27 +43,29 @@ public class ContactApp extends JFrame {
 		newTopPanel(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Small Shops Directory");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		newCompanyLbl(panel, lblNewLabel);
 		
-		JButton newButton = new JButton("");
+		JLabel companyLabel = newCompanyLbl();
+		panel.add(companyLabel);
+		
+		JButton newButton = newCompanyLogo();
+		panel.add(newButton);		
+		
+		
+	}
+
+	private JButton newCompanyLogo() {
+		JButton newButton = new JButton();
 		newButton.setIcon(new ImageIcon(ContactApp.class.getResource("/img/SSLogo.png")));
-		newCompanyLogo(panel, newButton);
-		
-		
-		
+		newButton.setBounds(22, 23, 64, 64);
+		return newButton;
 	}
 
-	private void newCompanyLogo(JPanel panel, JButton btnNewButton) {
-		btnNewButton.setBounds(22, 23, 64, 64);
-		panel.add(btnNewButton);
-	}
-
-	private void newCompanyLbl(JPanel panel, JLabel lblNewLabel) {
-		lblNewLabel.setFont(new Font("PingFang HK", Font.PLAIN, 27));
-		lblNewLabel.setBounds(98, 39, 298, 48);
-		panel.add(lblNewLabel);
+	private JLabel newCompanyLbl() {
+		JLabel newLbl = new JLabel("Small Shops Directory");
+		newLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		newLbl.setFont(new Font("PingFang HK", Font.PLAIN, 27));
+		newLbl.setBounds(98, 39, 298, 48);
+		return newLbl;
 	}
 
 	private void newTopPanel(JPanel panel) {
