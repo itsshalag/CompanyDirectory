@@ -94,11 +94,11 @@ public class ContactApp extends JFrame {
 			contactLabel.add(name, "flowy,cell 1 0,alignx left,aligny center");
 			contactPanel.add(contactLabel);
 		
-			JLabel lblNewLabel = new JLabel(contact.getEmail());
-			contactLabel.add(lblNewLabel, "cell 1 0");
+			JLabel emailLbl = new JLabel(contact.getEmail());
+			contactLabel.add(emailLbl, "cell 1 0");
 			
-			JLabel lblNewLabel_1 = new JLabel(contact.getPhoneNumber());
-			contactLabel.add(lblNewLabel_1, "cell 1 0");
+			JLabel phoneLbl = new JLabel(contact.getPhoneNumber());
+			contactLabel.add(phoneLbl, "cell 1 0");
 			
 			contentPane.add(contactPanel);
 		}
