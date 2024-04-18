@@ -14,7 +14,6 @@ import edu.princeton.cs.algs4.Bag;
  * Each employee is a node and each direct contact is an edge.
  * 
  * @author Yudith Mendoza & Shala Gutierrez
- * 
  */
 public class Graph {
 	private Map<Integer, Contact> contactsMap; // Map to store contact by their ID
@@ -132,18 +131,9 @@ public class Graph {
 			System.out.println("Invalid empoyee ID. ");
 		}
 	}
-
-	public static void main(String[] args) {
-		Graph graph = new Graph("Resources/SmallShopsDirectory.txt", "Resources/DirectContact.txt");
-
-		if (graph != null) {
-			System.out.println("Number of vertices: " + graph.vertices());
-			System.out.println("Number of edges: " + graph.edges());
-
-			testDirectContacts(graph);
-		} else {
-			System.out.println("Graph is not properly initialized.");
-		}
+	
+	public Map<Integer, Contact> getAllContacts() {
+		return contactsMap;
 	}
 
 }
