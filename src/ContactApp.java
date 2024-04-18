@@ -80,10 +80,6 @@ public class ContactApp extends JFrame {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(e -> cardLayout.show(mainPanel, "Employees"));
 		contactPanel.add(backButton);
-		
-		String headshots[] = new String[]{"1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png",
-				"8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "17.png", 
-				"18.png", "19.png", "20.png", };
 
 		for (Contact contact : contactGraph.getDirectContacts(employeeId)) {
 			JPanel contactLabel = new JPanel();
