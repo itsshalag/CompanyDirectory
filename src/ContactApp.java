@@ -1,3 +1,5 @@
+package companyDirectory;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -14,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * This class represents the user interface.
@@ -45,7 +49,7 @@ public class ContactApp extends JFrame {
 		topPanel.add(companyLabel, BorderLayout.CENTER);
 
 		JButton logoButton = new JButton();
-		logoButton.setIcon(new ImageIcon(ContactApp.class.getResource("/img/SSLogo.png")));
+		logoButton.setIcon(new ImageIcon("img/SSLogo.png"));
 		logoButton.setBorderPainted(false);
 		logoButton.setContentAreaFilled(false);
 		logoButton.addActionListener(e -> cardLayout.show(mainPanel, "Employees"));
@@ -76,11 +80,31 @@ public class ContactApp extends JFrame {
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(e -> cardLayout.show(mainPanel, "Employees"));
 		contactPanel.add(backButton);
+		
+		String headshots[] = new String[]{"1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png",
+				"8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "17.png", 
+				"18.png", "19.png", "20.png", };
 
 		for (Contact contact : contactGraph.getDirectContacts(employeeId)) {
+			JPanel contactLabel = new JPanel();
+			contactLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+			contactLabel.setLayout(new MigLayout("", "[16px][170px]", "[16px]"));
+			
+			JButton btnNewButton = new JButton(new ImageIcon("img/" + contact.getId() + ".png"));
+			contactLabel.add(btnNewButton, "cell 0 0,alignx left,aligny center");
+			
 			String contactInfo = contact.getFirstName() + " " + contact.getLastName() + " - " + contact.getPosition();
-			JLabel contactLabel = new JLabel(contactInfo);
+			JLabel name = new JLabel(contactInfo);
+			contactLabel.add(name, "flowy,cell 1 0,alignx left,aligny center");
 			contactPanel.add(contactLabel);
+		
+			JLabel lblNewLabel = new JLabel(contact.getEmail());
+			contactLabel.add(lblNewLabel, "cell 1 0");
+			
+			JLabel lblNewLabel_1 = new JLabel(contact.getPhoneNumber());
+			contactLabel.add(lblNewLabel_1, "cell 1 0");
+			
+			contentPane.add(contactPanel);
 		}
 
 		mainPanel.add(new JScrollPane(contactPanel), "Contacts");
