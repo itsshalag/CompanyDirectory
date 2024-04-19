@@ -86,8 +86,9 @@ public class ContactApp extends JFrame {
 			contactLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
 			contactLabel.setLayout(new MigLayout("", "[16px][170px]", "[16px]"));
 			
-			JButton btnNewButton = new JButton(new ImageIcon("img/" + contact.getId() + ".png"));
-			contactLabel.add(btnNewButton, "cell 0 0,alignx left,aligny center");
+			JButton contactBtn = new JButton(new ImageIcon("img/" + contact.getId() + ".png"));
+			contactLabel.add(contactBtn, "cell 0 0,alignx left,aligny center");
+			contactBtn.addActionListener(e -> displayDirectContacts(contact.getId()));		
 			
 			String contactInfo = contact.getFirstName() + " " + contact.getLastName() + " - " + contact.getPosition();
 			JLabel name = new JLabel(contactInfo);
