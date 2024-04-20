@@ -30,6 +30,13 @@ public class ContactApp extends JFrame {
 	private JPanel mainPanel;
 	private CardLayout cardLayout;
 
+	/**
+	 * Creates JPanel with multiple elements to create a company directory.
+	 * Based on a graph created from two files-- one with all employee information
+	 * and the other representing all direct relationships
+	 * @param contactFilename
+	 * @param directContactFilename
+	 */
 	public ContactApp(String contactFilename, String directContactFilename) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 850, 650);
