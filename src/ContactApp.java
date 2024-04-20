@@ -75,39 +75,64 @@ public class ContactApp extends JFrame {
 		cardLayout.show(mainPanel, "Employees");
 	}
 
+	/**
+	 * Creates contact card for employee that includes their picture, name,
+	 * email, and phone number
+	 * @param contact
+	 * @return
+	 */
+	public JPanel createContactCard(Contact contact) {
+		JPanel contactCard = new JPanel();
+		contactCard.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
+		contactCard.setLayout(new MigLayout("", "[16px][170px]", "[16px]"));
+		
+		JButton contactBtn = new JButton(new ImageIcon("img/" + contact.getId() + ".png"));
+		contactBtn.setBorder(new EmptyBorder(0, 0, 0, 20));
+		contactCard.add(contactBtn, "cell 0 0,alignx left,aligny center");
+		contactBtn.addActionListener(e -> displayDirectContacts(contact.getId()));		
+		
+		String contactInfo = contact.getFirstName() + " " + contact.getLastName() + " - " + contact.getPosition();
+		JLabel name = new JLabel(contactInfo);
+		contactCard.add(name, "flowy,cell 1 0,alignx left,aligny center");
+		
+	
+		JLabel emailLbl = new JLabel(contact.getEmail());
+		contactCard.add(emailLbl, "cell 1 0");
+		
+		JLabel phoneLbl = new JLabel(contact.getPhoneNumber());
+		contactCard.add(phoneLbl, "cell 1 0");
+		
+		return contactCard;
+	}
+	/**
+	 * Makes all contact cards for the employees that have a direct relationship
+	 * with selected employee
+	 * @param employeeId
+	 */
 	private void displayDirectContacts(int employeeId) {
-		JPanel contactPanel = new JPanel(new GridLayout(0, 1, 10, 10));
+		JPanel cPanel = new JPanel(new BorderLayout());
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBorder(new EmptyBorder(0, 0, 0, 780));
+		
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(e -> cardLayout.show(mainPanel, "Employees"));
-		contactPanel.add(backButton);
+		buttonPanel.add(backButton);
+		cPanel.add(buttonPanel, BorderLayout.NORTH);
+		
+		JPanel contactsPanel = new JPanel(new GridLayout(0, 1, 10, 10));
 
 		for (Contact contact : contactGraph.getDirectContacts(employeeId)) {
-			JPanel contactLabel = new JPanel();
-			contactLabel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-			contactLabel.setLayout(new MigLayout("", "[16px][170px]", "[16px]"));
-			
-			JButton contactBtn = new JButton(new ImageIcon("img/" + contact.getId() + ".png"));
-			contactLabel.add(contactBtn, "cell 0 0,alignx left,aligny center");
-			contactBtn.addActionListener(e -> displayDirectContacts(contact.getId()));		
-			
-			String contactInfo = contact.getFirstName() + " " + contact.getLastName() + " - " + contact.getPosition();
-			JLabel name = new JLabel(contactInfo);
-			contactLabel.add(name, "flowy,cell 1 0,alignx left,aligny center");
-			contactPanel.add(contactLabel);
-		
-			JLabel emailLbl = new JLabel(contact.getEmail());
-			contactLabel.add(emailLbl, "cell 1 0");
-			
-			JLabel phoneLbl = new JLabel(contact.getPhoneNumber());
-			contactLabel.add(phoneLbl, "cell 1 0");
-			
-			contentPane.add(contactPanel);
+			JPanel contactCard = createContactCard(contact);
+			contactsPanel.add(contactCard);
 		}
-
-		mainPanel.add(new JScrollPane(contactPanel), "Contacts");
+		
+		cPanel.add(contactsPanel, BorderLayout.CENTER);
+		
+		contentPane.add(cPanel);
+		mainPanel.add(new JScrollPane(cPanel), "Contacts");
 		cardLayout.show(mainPanel, "Contacts");
 	}
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
